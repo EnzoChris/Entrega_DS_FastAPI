@@ -1,0 +1,24 @@
+.card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.card h4 {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 16px;
+  color: #555;
+}
+
+.dataObs {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 10px;
+}

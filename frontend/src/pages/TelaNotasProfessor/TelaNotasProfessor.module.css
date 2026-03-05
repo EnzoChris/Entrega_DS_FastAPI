@@ -1,0 +1,140 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Poppins, sans-serif;
+}
+
+body {
+  background-color: #F7F7F8;
+}
+
+main {
+  margin-left: 88px;
+  margin-right: 88px;
+  margin-top: 30px;
+}
+
+.btnVoltar {
+  width: min-content;
+  padding: 8px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #585858;
+  font-size: 18px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  white-space: nowrap;
+}
+
+.btnVoltar:hover {
+  color: #ffffff;
+  background-color: #8E00FF;
+  transform: scale(1.05);
+  transition: all 0.3s ease-out;
+}
+
+.blocoAluno {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+  background-color: #8E00FF;
+  color: white;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.iconeUser {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #B48FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconeUser i {
+  font-size: 60px;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.abaNotas {
+  width: 49%;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  box-shadow: 0px 1px 6px rgb(170, 170, 170);
+  background-color: #8E00FF;
+  color: white;
+}
+
+.abaObservacoes {
+  width: 49%;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  box-shadow: 0px 1px 6px rgb(170, 170, 170);
+  text-decoration: none;
+  color: inherit;
+}
+
+.abaObservacoes:hover {
+  background-color: #8E00FF;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+}
+
+.preNotas {
+  align-items: center;
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btnAdicionarNota {
+  border: none;
+  background-color: #8E00FF;
+  width: 190px;
+  padding: 8px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.btnAdicionarNota:hover {
+  background-color: #B48FFF;
+  transform: scale(1.05);
+  transition: all 0.3s ease-out;
+}
+
+.btnAdicionarNota i {
+  font-size: 20px;
+}
+
+.notasContainer {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 70px;
+}

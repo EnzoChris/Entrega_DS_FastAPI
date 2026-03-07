@@ -1,24 +1,61 @@
-from fastapi import FastAPI
-from services.aluno_service import AlunoService
-from services.notas_service import NotasService
-from services.observacoes_service import ObservacoesService
-from services.professor_service import ProfessorService
 from model.observacoes import Observacoes
 from model.notas import Nota
 
+from repositories.professor_repository import ProfessorRepository
+from repositories.aluno_repository import AlunoRepository
+from repositories.notas_repository import NotasRepository
+from repositories.observacoes_repository import ObervacoesRepository
+
+from services.professor_service import ProfessorService
+from services.aluno_service import AlunoService
+from services.notas_service import NotasService
+from services.observacoes_service import ObservacoesService
 from core.init_db import init_db
+
+
+from fastapi import FastAPI,Request
+from fastapi.responses import JSONResponse
+
 
 app = FastAPI()
 
 
-@app.get("/api/login-professor-verificacao/{usuario}")
-def get_veri_professor(usuario:str):
+professor_service = ProfessorService(ProfessorRepository())
+aluno_service = AlunoService(AlunoRepository())
+notas_service = NotasService(NotasRepository())
+observacoes_service = ObservacoesService(ObervacoesRepository())
+
+
+@app.on_event("startup")
+def startup():
     init_db()
 
-    professor = ProfessorService.buscar_por_usuario(usuario)
-    alunos = AlunoService.buscar_alunos_por_professor(usuario)
-    qnt_notas = ProfessorService.contar_notas_lancadas(usuario)
-    media_alunos = ProfessorService.calc_media_geral(usuario)
+
+@app.exception_handler(ValueError)
+async def value_error_handler(request: Request, exc: ValueError):
+    return JSONResponse(
+        status_code=400,
+        content={"error": str(exc)}
+    )
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Erro interno no servidor"
+        }
+    )
+
+
+@app.get("/api/login-professor/{usuario}/{senha}")
+def get_veri_professor(usuario:str, senha:str):
+
+    professor = professor_service.login_professor(usuario, senha)
+    alunos = aluno_service.buscar_alunos_por_professor(usuario)
+    qnt_notas = professor_service.contar_notas_lancadas(usuario)
+    media_alunos = professor_service.calc_media_geral(usuario)
 
     return {
         "professor":professor,
@@ -28,12 +65,11 @@ def get_veri_professor(usuario:str):
     }
 
 
-@app.get("/api/login-aluno-verificacao/{matricula}")
-def get_veri_aluno(matricula:str):
-    init_db()
-    aluno = AlunoService.buscar_por_matricula(matricula)
-    notas_aluno = NotasService.carregar_nota(matricula)
-    observacoes_aluno = ObservacoesService.carregar_obervacoes(matricula)
+@app.get("/api/login-aluno/{email}/{senha}")
+def get_veri_aluno(email:str, senha:str):
+    aluno = aluno_service.login_aluno(email, senha)
+    notas_aluno = notas_service.carregar_nota(email)
+    observacoes_aluno = observacoes_service.carregar_obervacoes(email)
 
     return {
         "aluno":aluno,
@@ -42,31 +78,29 @@ def get_veri_aluno(matricula:str):
     }
 
 
-@app.post("/api/enviar-observacao/{observacao}")
+@app.post("/api/enviar-observacao/")
 def enviar_observcao(observacao:Observacoes):
-    init_db()
-    observacao = ObservacoesService.registrar_observacao(observacao)
+    observacao = observacoes_service.registrar_observacao(observacao)
+
+    return {"observacao":observacao}
 
 
 @app.delete("/api/enviar-observacao/{usuario}")
 def apagar_observcao(usuario:str):
-    init_db()
-    ObservacoesService.apagar_observacao(usuario)
+    observacoes_service.apagar_observacao(usuario)
 
 
-
-@app.post("/api/lancar-nota/{matricula}/{nota}")
+@app.post("/api/lancar-nota/{matricula}")
 def lancar_nota(matricula:str, nota:Nota):
-    init_db()
 
-    nota_resp = NotasService.atualizar_nota(matricula, nota)
+    nota_resp = notas_service.atualizar_nota(matricula, nota)
 
     return {"nota":nota_resp}
 
 
-@app.post("/api/compoletar-cadastro/{matricula}/{email}/{senha}")
+@app.post("/api/completar-cadastro/{matricula}/{email}/{senha}")
 def completar_cadastro_endpoint(matricula:str, email:str, senha:str):
 
-    resposta = AlunoService.completar_cadatro(matricula, email, senha)
+    resposta = aluno_service.completar_cadatro(matricula, email, senha)
 
     return {"aluno":resposta}

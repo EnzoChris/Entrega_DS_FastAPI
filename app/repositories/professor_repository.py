@@ -17,6 +17,7 @@ class ProfessorRepository:
             Professor.usuario == usuario
         ).first()
         return professor
+
     
     def contar_notas(self, usuario:str):
         professor = self.buscar_por_usuario(usuario)

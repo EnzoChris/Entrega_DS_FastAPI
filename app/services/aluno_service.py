@@ -8,83 +8,71 @@ class AlunoService:
         self.aluno_repository = aluno_repository
 
 
-    def listar_alunos(self):
-        try:
-            alunos = self.aluno_repository.list()
 
-            return [
+
+    def listar_alunos(self):
+        
+        alunos = self.aluno_repository.list()
+
+        return [
                 {
                 "matricula": aluno.matricula,
                 "nome": aluno.nome,
                 "usuario": aluno.usuario,
                 "email": aluno.email
                 } for aluno in alunos
-            ]
+        ]
         
-        except Exception as e:
-            return {"Erro":str(e)}
-    
-
-
 
     def buscar_por_email(self, email:str):
 
-        try:
+        aluno = self.aluno_repository.buscar_por_email(email)
 
-            aluno = self.aluno_repository.buscar_por_email(email)
+        if not aluno:
+            raise ValueError("Aluno não encontrado")
 
-            return {
+        return {
                 "matricula": aluno.matricula,
                 "nome": aluno.nome,
                 "usuario": aluno.usuario,
                 "email": aluno.email
-                } 
-            
-
-        except Exception as e:
-            return {"Erro":str(e)}
-        
+        } 
 
 
     def buscar_por_matricula(self, matricula:str):
-        
-        try:
-            matricula_uuid = UUID(matricula)
-            aluno = self.aluno_repository.buscar_por_matricula(matricula_uuid)
+        matricula_uuid = UUID(matricula)
 
+        aluno = self.aluno_repository.buscar_por_matricula(matricula_uuid)
+        if not aluno:
+            raise ValueError("Aluno não encontrado")
+        else:
             return {
-                "matricula": aluno.matricula,
-                "nome": aluno.nome,
-                "usuario": aluno.usuario,
-                "email": aluno.email
-                } 
-        
-        except Exception as e:
-            return {"Erro":str(e)}
-        
-    
+                    "matricula": aluno.matricula,
+                    "nome": aluno.nome,
+                    "usuario": aluno.usuario,
+                    "email": aluno.email
+            }     
+
 
     def pre_cadastro(self, nome:str, matricula:str, usuario:str):
-
-        try:
-            matricula_uuid = UUID(matricula)
-
-            self.aluno_repository.pre_cadastro(nome, matricula_uuid, usuario)
-        except Exception as e:
-            return {"Erro":str(e)}
         
+            matricula_uuid = UUID(matricula)
+            return self.aluno_repository.pre_cadastro(
+                nome, 
+                matricula_uuid, 
+                usuario
+            )
+
 
     def completar_cadatro(self, matricula:str, email:str, senha:str):
         matricula_uuid = UUID(matricula)
 
-        resp = self.aluno_repository.completar_cadatro(matricula_uuid, email, senha)
-        
-        return resp
+        return self.aluno_repository.completar_cadatro(matricula_uuid, email, senha)
 
 
     def buscar_alunos_por_professor(self, usuario_professor:str):
 
-        alunos = AlunoRepository.buscar_alunos_por_professor(usuario_professor)
+        alunos = self.aluno_repository.buscar_alunos_por_professor(usuario_professor)
 
         return [
                 {
@@ -96,4 +84,13 @@ class AlunoService:
             ]
 
 
+    def login_aluno(self, email:str, senha:str):
 
+        aluno = self.buscar_por_email(email)
+
+        if not aluno:
+            raise ValueError("O aluno não existe")
+        if aluno.senha != senha:
+            raise ValueError("O aluno não existe")
+        
+        return aluno

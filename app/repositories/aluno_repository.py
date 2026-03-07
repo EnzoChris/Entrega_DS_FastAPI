@@ -5,6 +5,8 @@ from model.professor_disciplina import professor_disciplina
 from repositories.professor_repository import ProfessorRepository
 from uuid import UUID
 
+professor_repository = ProfessorRepository()
+
 class AlunoRepository:
 
     def __init__(self, db):
@@ -31,6 +33,8 @@ class AlunoRepository:
         self.db.add(aluno)
         self.db.commit()
 
+        return aluno
+
     def completar_cadatro(self, matricula:UUID, email:str, senha:str):
 
         aluno = Aluno(
@@ -51,7 +55,7 @@ class AlunoRepository:
     
 
     def buscar_alunos_por_professor(self, usuario_professor:str):
-        professor = ProfessorRepository.buscar_por_usuario(usuario_professor)
+        professor = professor_repository.buscar_por_usuario(usuario_professor)
 
         if not professor:
             raise ValueError("Professor não encontrado")

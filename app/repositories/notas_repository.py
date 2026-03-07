@@ -1,7 +1,12 @@
 from model.notas import Nota
 from model.aluno import Aluno
 from model.professor import Professor
+from repositories.aluno_repository import AlunoRepository
+from repositories.professor_repository import ProfessorRepository
 from uuid import UUID
+
+aluno_repository = AlunoRepository()
+professor_repository = ProfessorRepository()
 
 class NotasRepository:
 
@@ -15,7 +20,8 @@ class NotasRepository:
 
 
     
-    def carregar_nota(self, aluno:Aluno):
+    def carregar_nota(self, email:str):
+        aluno = aluno_repository.buscar_por_email(email)
         return self.db.query(Nota.n1, Nota.n2, Nota.cod_materia).filter(Nota.matricula_aluno == aluno.matricula).all()
     
 
@@ -49,7 +55,9 @@ class NotasRepository:
 
 
 
-    def buscar_notas_por_professor(self, professor:Professor):
+    def buscar_notas_por_professor(self, usuario_professor:str):
+
+        professor = professor_repository.buscar_por_usuario(usuario_professor)
 
         sql = """
                     SELECT n.n1, n.n2, n.id_disciplina

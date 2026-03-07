@@ -10,7 +10,6 @@ class NotasService:
         self.notas_repository = notas_repository
 
     def listar_notas(self):
-        try:
             notas = self.notas_repository.list()
             return [
                 {
@@ -20,15 +19,11 @@ class NotasService:
                     "cod_materia":nota.cod_materia
                 } for nota in notas
             ]
-        except Exception as e:
-            return {"Erro":str(e)}
-        
-    
-    def carregar_nota(self, matricula_aluno:str):
-        try:
-            matricula_uuid = UUID(matricula_aluno)
-            aluno = AlunoRepository.buscar_por_matricula(matricula_uuid)
-            notas = NotasRepository.carregar_nota(aluno)
+
+
+    def carregar_nota(self, email:str):
+            
+            notas = self.notas_repository.carregar_nota(email)
             return [
                 {
                     "n1":nota.n1,
@@ -37,27 +32,17 @@ class NotasService:
                     "cod_materia":nota.cod_materia
                 } for nota in notas
             ]
-        except Exception as e:
-            return {"Erro":str(e)}
-        
-    
+         
 
     def atualizar_nota(self, matricula:str, nota:Nota):
-        try:
-            matricula_uuid = UUID(matricula)
-            resp = self.atualizar_nota(matricula_uuid, nota)
-            return resp
             
-        except Exception as e:
-            return {"Erro":str(e)}
-        
+        matricula_uuid = UUID(matricula)
+        return self.notas_repository.atualizar_nota(matricula_uuid, nota)
+                  
 
     def buscar_notas_por_professor(self, usuario_professor:str):
-        try:
-            professor = ProfessorRepository.buscar_por_usuario(usuario_professor)
-            self.notas_repository.buscar_notas_por_professor(professor)
-        except Exception as e:
-            return {"Erro":str(e)}
+
+        self.notas_repository.buscar_notas_por_professor(usuario_professor)
 
 
 

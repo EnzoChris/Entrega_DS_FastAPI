@@ -1,7 +1,12 @@
 from model.observacoes import Observacoes
 from model.aluno import Aluno
 from model.professor import Professor
+from repositories.aluno_repository import AlunoRepository
+from repositories.professor_repository import ProfessorRepository
 from uuid import UUID
+
+aluno_repository = AlunoRepository()
+professor_repository = ProfessorRepository()
 
 class ObervacoesRepository:
 
@@ -15,9 +20,14 @@ class ObervacoesRepository:
 
 
     
-    def carregar_obervacoes(self, aluno:Aluno):
-        return self.db.query(Observacoes.id_remetente, Observacoes.mensagem, Observacoes.data_envio).filter(Observacoes.id_destinatario == aluno.matricula).all()
-    
+    def carregar_obervacoes(self, email:str):
+
+        aluno = aluno_repository.buscar_por_email(email)
+
+        return (self.db.query(Observacoes.id_remetente, Observacoes.mensagem, Observacoes.data_envio)
+                .filter(Observacoes.id_destinatario == aluno.matricula)
+                .all()
+                )
 
 
     
@@ -41,7 +51,8 @@ class ObervacoesRepository:
 
 
 
-    def apagar_observacao(self, professor:Professor):
+    def apagar_observacao(self, usuario_professor:str):
+        professor = professor_repository.buscar_por_usuario(usuario_professor)
         observacao = self.db.query(Observacoes).filter(
             Observacoes.id_remetente == professor.id
         ).first()

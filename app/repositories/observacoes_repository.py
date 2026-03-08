@@ -1,16 +1,13 @@
 from model.observacoes import Observacoes
-from model.aluno import Aluno
-from model.professor import Professor
 from repositories.aluno_repository import AlunoRepository
 from repositories.professor_repository import ProfessorRepository
 from uuid import UUID
+from sqlalchemy.orm import Session
 
-aluno_repository = AlunoRepository()
-professor_repository = ProfessorRepository()
 
 class ObervacoesRepository:
 
-    def __init__(self, db):
+    def __init__(self, db: Session):
         self.db = db
 
 
@@ -21,6 +18,8 @@ class ObervacoesRepository:
 
     
     def carregar_obervacoes(self, email:str):
+        aluno_repository = AlunoRepository(self.db)
+
 
         aluno = aluno_repository.buscar_por_email(email)
 
@@ -52,13 +51,15 @@ class ObervacoesRepository:
 
 
     def apagar_observacao(self, usuario_professor:str):
+        professor_repository = ProfessorRepository(self.db)
+
         professor = professor_repository.buscar_por_usuario(usuario_professor)
         observacao = self.db.query(Observacoes).filter(
             Observacoes.id_remetente == professor.id
         ).first()
 
         if not observacao:
-            return None
+            raise ValueError("Não existe nenhuma observação")
     
         self.db.delete(observacao)
         self.db.commit()

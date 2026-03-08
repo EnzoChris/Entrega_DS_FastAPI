@@ -1,13 +1,7 @@
-from sqlalchemy import Table, Column, String, DateTime, Text, ForeignKey, Integer
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Table, Column,ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
-import uuid
 
-from datetime import datetime
 from model.base import Base
-from model.disciplina import Disciplina
-from model.professor import Professor
 
 professor_disciplina = Table(
 "professor_disciplina",

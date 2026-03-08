@@ -1,11 +1,8 @@
 from sqlalchemy import Column, String
-from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
-from datetime import datetime
 from model.base import Base
-from model.notas import Nota
 
 
 

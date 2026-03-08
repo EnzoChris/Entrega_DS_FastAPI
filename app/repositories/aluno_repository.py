@@ -4,12 +4,14 @@ from model.disciplina import Disciplina
 from model.professor_disciplina import professor_disciplina
 from repositories.professor_repository import ProfessorRepository
 from uuid import UUID
+from core.database import get_db
+from sqlalchemy.orm import Session
 
-professor_repository = ProfessorRepository()
+
 
 class AlunoRepository:
 
-    def __init__(self, db):
+    def __init__(self, db: Session):
         self.db = db
 
 
@@ -37,7 +39,7 @@ class AlunoRepository:
 
     def completar_cadatro(self, matricula:UUID, email:str, senha:str):
 
-        aluno = Aluno(
+        aluno =(
             self.db.query(Aluno).
             filter(Aluno.matricula == matricula).
             first()
@@ -55,6 +57,9 @@ class AlunoRepository:
     
 
     def buscar_alunos_por_professor(self, usuario_professor:str):
+        professor_repository = ProfessorRepository(self.db)
+
+
         professor = professor_repository.buscar_por_usuario(usuario_professor)
 
         if not professor:

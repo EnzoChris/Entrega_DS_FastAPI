@@ -1,13 +1,12 @@
-from sqlalchemy import Column, String, DateTime, Text, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Column, DateTime, Text, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 import uuid
 
 from datetime import datetime
 from model.base import Base
-from model.aluno import Aluno
-from model.professor import Professor
+
 
 class Observacoes(Base):
 

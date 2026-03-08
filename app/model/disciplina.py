@@ -1,16 +1,9 @@
-from sqlalchemy import Column, String, DateTime, Integer
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Enum as SQLEnum
-from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
+from sqlalchemy import Column, String,Integer
+from sqlalchemy.orm import relationship
 from enum import Enum
-import uuid
 
-from datetime import datetime
 from model.base import Base
-from model.notas import Nota
 from model.professor_disciplina import professor_disciplina
-from model.professor import Professor
 
 
 class Disciplina(Base):

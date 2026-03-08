@@ -1,8 +1,6 @@
 from repositories.observacoes_repository import ObervacoesRepository 
-from services.aluno_service import AlunoService
-from model.aluno import Aluno
+from schemas.observcao_schema import observacaoCrete
 from model.observacoes import Observacoes
-from repositories.professor_repository import ProfessorRepository
 from uuid import UUID
 
 class ObservacoesService:
@@ -36,9 +34,18 @@ class ObservacoesService:
         ]
 
 
-    def registrar_observacao(self, observacao:Observacoes):
+    def registrar_observacao(self, observacao:observacaoCrete):
+
+        observacao_real = Observacoes(
+            id = observacao.id,
+            data_envio=observacao.data_envio,
+            mensagem=observacao.mensagem,
+            id_destinatario = observacao.id_destinatario,
+            id_remetente = observacao.id_remetente,
+
+        )
         
-        return self.observacoes_repository.registrar_observacao(observacao)
+        return self.observacoes_repository.registrar_observacao(observacao_real)
             
 
     def buscar_por_remetente(self, id_remetente:str):

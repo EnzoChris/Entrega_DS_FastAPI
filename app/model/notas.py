@@ -1,11 +1,8 @@
-from sqlalchemy import Column, String, Float, ForeignKey, Enum, Integer, Numeric
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Column, ForeignKey, Integer, Numeric
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 
-from datetime import datetime
 from model.base import Base
-from model.aluno import Aluno
-from model.disciplina import Disciplina
 
 class Nota(Base):
 

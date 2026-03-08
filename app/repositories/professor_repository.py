@@ -1,14 +1,13 @@
 from model.notas import Nota
-from model.aluno import Aluno
 from model.professor import Professor
 from model.disciplina import Disciplina
 from model.professor_disciplina import professor_disciplina
-from uuid import UUID
 from sqlalchemy import func
+from sqlalchemy.orm import Session
 
 class ProfessorRepository:
 
-    def __init__(self, db):
+    def __init__(self, db: Session):
         self.db = db
 
 

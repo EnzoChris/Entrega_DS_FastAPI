@@ -1,5 +1,6 @@
-from model.observacoes import Observacoes
-from model.notas import Nota
+from schemas.nota_schema import notaCreate
+from schemas.observcao_schema import observacaoCrete
+
 
 from repositories.professor_repository import ProfessorRepository
 from repositories.aluno_repository import AlunoRepository
@@ -11,19 +12,17 @@ from services.aluno_service import AlunoService
 from services.notas_service import NotasService
 from services.observacoes_service import ObservacoesService
 from core.init_db import init_db
+from core.database import get_db
+
 
 
 from fastapi import FastAPI,Request
 from fastapi.responses import JSONResponse
+from fastapi import Depends
+from sqlalchemy.orm import Session
 
 
 app = FastAPI()
-
-
-professor_service = ProfessorService(ProfessorRepository())
-aluno_service = AlunoService(AlunoRepository())
-notas_service = NotasService(NotasRepository())
-observacoes_service = ObservacoesService(ObervacoesRepository())
 
 
 @app.on_event("startup")
@@ -50,7 +49,9 @@ async def generic_exception_handler(request: Request, exc: Exception):
 
 
 @app.get("/api/login-professor/{usuario}/{senha}")
-def get_veri_professor(usuario:str, senha:str):
+def get_veri_professor(usuario:str, senha:str, db: Session = Depends(get_db)):
+    professor_service = ProfessorService(ProfessorRepository(db))
+    aluno_service = AlunoService(AlunoRepository(db))
 
     professor = professor_service.login_professor(usuario, senha)
     alunos = aluno_service.buscar_alunos_por_professor(usuario)
@@ -66,7 +67,11 @@ def get_veri_professor(usuario:str, senha:str):
 
 
 @app.get("/api/login-aluno/{email}/{senha}")
-def get_veri_aluno(email:str, senha:str):
+def get_veri_aluno(email:str, senha:str, db: Session = Depends(get_db)):
+    aluno_service = AlunoService(AlunoRepository(db))
+    notas_service = NotasService(NotasRepository(db))
+    observacoes_service = ObservacoesService(ObervacoesRepository(db))
+
     aluno = aluno_service.login_aluno(email, senha)
     notas_aluno = notas_service.carregar_nota(email)
     observacoes_aluno = observacoes_service.carregar_obervacoes(email)
@@ -79,19 +84,24 @@ def get_veri_aluno(email:str, senha:str):
 
 
 @app.post("/api/enviar-observacao/")
-def enviar_observcao(observacao:Observacoes):
+def enviar_observcao(observacao:observacaoCrete, db: Session = Depends(get_db)):
+    observacoes_service = ObservacoesService(ObervacoesRepository(db))
+
     observacao = observacoes_service.registrar_observacao(observacao)
 
     return {"observacao":observacao}
 
 
 @app.delete("/api/enviar-observacao/{usuario}")
-def apagar_observcao(usuario:str):
+def apagar_observcao(usuario:str, db: Session = Depends(get_db)):
+    observacoes_service = ObservacoesService(ObervacoesRepository(db))
+
     observacoes_service.apagar_observacao(usuario)
 
 
 @app.post("/api/lancar-nota/{matricula}")
-def lancar_nota(matricula:str, nota:Nota):
+def lancar_nota(matricula:str, nota:notaCreate, db: Session = Depends(get_db)):
+    notas_service = NotasService(NotasRepository(db))
 
     nota_resp = notas_service.atualizar_nota(matricula, nota)
 
@@ -99,7 +109,8 @@ def lancar_nota(matricula:str, nota:Nota):
 
 
 @app.post("/api/completar-cadastro/{matricula}/{email}/{senha}")
-def completar_cadastro_endpoint(matricula:str, email:str, senha:str):
+def completar_cadastro_endpoint(matricula:str, email:str, senha:str, db: Session = Depends(get_db)):
+    aluno_service = AlunoService(AlunoRepository(db))
 
     resposta = aluno_service.completar_cadatro(matricula, email, senha)
 

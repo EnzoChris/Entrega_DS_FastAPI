@@ -5,7 +5,7 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 
 
-class ObervacoesRepository:
+class ObservacoesRepository:
 
     def __init__(self, db: Session):
         self.db = db
@@ -22,6 +22,9 @@ class ObervacoesRepository:
 
 
         aluno = aluno_repository.buscar_por_email(email)
+
+        if not aluno:
+            raise ValueError("Aluno não encontrado")
 
         return (self.db.query(Observacoes.id_remetente, Observacoes.mensagem, Observacoes.data_envio)
                 .filter(Observacoes.id_destinatario == aluno.matricula)

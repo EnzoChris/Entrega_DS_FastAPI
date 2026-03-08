@@ -18,6 +18,12 @@ class Nota(Base):
     cod_materia = Column(Integer, ForeignKey("disciplina.codigo"), nullable=False)
     disciplinas = relationship("Disciplina", back_populates="notas")
 
-
-    def media(self):
-        return (self.n1+self.n2)/2
+    
+    def to_dict(self):
+        return {
+            "codigo": self.codigo,
+            "n1": self.n1,
+            "n2": self.n2,
+            "matricula_aluno": self.matricula_aluno,
+            "cod_materia": self.cod_materia,
+        }

@@ -30,13 +30,9 @@ class AlunoService:
 
         if not aluno:
             raise ValueError("Aluno não encontrado")
+        
+        return aluno
 
-        return {
-                "matricula": aluno.matricula,
-                "nome": aluno.nome,
-                "usuario": aluno.usuario,
-                "email": aluno.email
-        } 
 
 
     def buscar_por_matricula(self, matricula:str):
@@ -75,13 +71,8 @@ class AlunoService:
         alunos = self.aluno_repository.buscar_alunos_por_professor(usuario_professor)
 
         return [
-                {
-                "matricula": aluno.matricula,
-                "nome": aluno.nome,
-                "usuario": aluno.usuario,
-                "email": aluno.email
-                } for aluno in alunos
-            ]
+                aluno.to_dict() for aluno in alunos
+            ] 
 
 
     def login_aluno(self, email:str, senha:str):

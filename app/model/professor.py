@@ -22,3 +22,12 @@ class Professor(Base):
 
     observacoes = relationship("Observacoes", back_populates="professores")
     disciplinas = relationship("Disciplina",secondary=professor_disciplina, back_populates="professores")
+
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "nome": self.nome,
+            "usuario": self.usuario,
+            "senha": self.senha
+        }

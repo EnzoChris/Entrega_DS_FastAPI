@@ -5,7 +5,7 @@ from schemas.observcao_schema import observacaoCrete
 from repositories.professor_repository import ProfessorRepository
 from repositories.aluno_repository import AlunoRepository
 from repositories.notas_repository import NotasRepository
-from repositories.observacoes_repository import ObervacoesRepository
+from repositories.observacoes_repository import ObservacoesRepository
 
 from services.professor_service import ProfessorService
 from services.aluno_service import AlunoService
@@ -59,7 +59,7 @@ def get_veri_professor(usuario:str, senha:str, db: Session = Depends(get_db)):
     media_alunos = professor_service.calc_media_geral(usuario)
 
     return {
-        "professor":professor,
+        "professor":professor.to_dict(),
         "qnt_professores":qnt_notas,
         "media_alunos":media_alunos,
         "alunos":alunos
@@ -70,14 +70,14 @@ def get_veri_professor(usuario:str, senha:str, db: Session = Depends(get_db)):
 def get_veri_aluno(email:str, senha:str, db: Session = Depends(get_db)):
     aluno_service = AlunoService(AlunoRepository(db))
     notas_service = NotasService(NotasRepository(db))
-    observacoes_service = ObservacoesService(ObervacoesRepository(db))
+    observacoes_service = ObservacoesService(ObservacoesRepository(db))
 
     aluno = aluno_service.login_aluno(email, senha)
     notas_aluno = notas_service.carregar_nota(email)
     observacoes_aluno = observacoes_service.carregar_obervacoes(email)
 
     return {
-        "aluno":aluno,
+        "aluno":aluno.to_dict(),
         "notas": notas_aluno,
         "observacoes_aluno":observacoes_aluno
     }
@@ -85,16 +85,16 @@ def get_veri_aluno(email:str, senha:str, db: Session = Depends(get_db)):
 
 @app.post("/api/enviar-observacao/")
 def enviar_observcao(observacao:observacaoCrete, db: Session = Depends(get_db)):
-    observacoes_service = ObservacoesService(ObervacoesRepository(db))
+    observacoes_service = ObservacoesService(ObservacoesRepository(db))
 
     observacao = observacoes_service.registrar_observacao(observacao)
 
-    return {"observacao":observacao}
+    return {"observacao":observacao.to_dict()}
 
 
-@app.delete("/api/enviar-observacao/{usuario}")
+@app.delete("/api/deletar-observacao/{usuario}")
 def apagar_observcao(usuario:str, db: Session = Depends(get_db)):
-    observacoes_service = ObservacoesService(ObervacoesRepository(db))
+    observacoes_service = ObservacoesService(ObservacoesRepository(db))
 
     observacoes_service.apagar_observacao(usuario)
 
@@ -105,7 +105,7 @@ def lancar_nota(matricula:str, nota:notaCreate, db: Session = Depends(get_db)):
 
     nota_resp = notas_service.atualizar_nota(matricula, nota)
 
-    return {"nota":nota_resp}
+    return {"nota":nota_resp.to_dict()}
 
 
 @app.post("/api/completar-cadastro/{matricula}/{email}/{senha}")
@@ -114,4 +114,4 @@ def completar_cadastro_endpoint(matricula:str, email:str, senha:str, db: Session
 
     resposta = aluno_service.completar_cadatro(matricula, email, senha)
 
-    return {"aluno":resposta}
+    return {"aluno":resposta.to_dict()}

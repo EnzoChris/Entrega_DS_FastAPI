@@ -15,3 +15,10 @@ class Disciplina(Base):
 
     notas = relationship("Nota", back_populates="disciplinas")
     professores = relationship("Professor",secondary=professor_disciplina, back_populates="disciplinas")
+
+
+    def to_dict(self):
+        return {
+            "codigo": str(self.codigo),
+            "nome": self.nome,
+        }

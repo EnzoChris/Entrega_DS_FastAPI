@@ -26,3 +26,12 @@ class Observacoes(Base):
 
     id_remetente = Column(UUID, ForeignKey("professor.id"), nullable=False)
     professores = relationship("Professor", back_populates="observacoes")
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "mensagem": self.mensagem,
+            "data_envio": str(self.data_envio),
+            "id_remetente": self.id_remetente,
+            "id_destinatario": self.id_destinatario
+        }

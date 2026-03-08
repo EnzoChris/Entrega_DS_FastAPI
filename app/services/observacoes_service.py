@@ -1,11 +1,11 @@
-from repositories.observacoes_repository import ObervacoesRepository 
+from repositories.observacoes_repository import ObservacoesRepository 
 from schemas.observcao_schema import observacaoCrete
 from model.observacoes import Observacoes
 from uuid import UUID
 
 class ObservacoesService:
 
-    def __init__(self, observacoes_repository:ObervacoesRepository):
+    def __init__(self, observacoes_repository:ObservacoesRepository):
         self.observacoes_repository = observacoes_repository
 
 

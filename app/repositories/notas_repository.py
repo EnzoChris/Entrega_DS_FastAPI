@@ -3,6 +3,7 @@ from repositories.aluno_repository import AlunoRepository
 from repositories.professor_repository import ProfessorRepository
 from uuid import UUID
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 
 class NotasRepository:
@@ -35,7 +36,7 @@ class NotasRepository:
             ).first()
         )
 
-        if nota:
+        if nota_metodo:
             nota_metodo.n1 = nota.n1
             nota_metodo.n2 = nota.n2
             
@@ -49,6 +50,7 @@ class NotasRepository:
 
             self.db.add(nova_nota)
 
+        self.db.commit()
         return nota   
 
 
@@ -67,7 +69,8 @@ class NotasRepository:
                     WHERE pd.id_professor = :professor_id
             """
 
-        notas = self.db.execute(sql, {"professor_id": professor.id})
+        notas = self.db.execute(text(sql), {"professor_id": professor.id})
+
 
         return notas.fetchall()
     

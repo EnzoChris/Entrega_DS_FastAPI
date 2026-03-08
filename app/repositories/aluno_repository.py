@@ -4,7 +4,6 @@ from model.disciplina import Disciplina
 from model.professor_disciplina import professor_disciplina
 from repositories.professor_repository import ProfessorRepository
 from uuid import UUID
-from core.database import get_db
 from sqlalchemy.orm import Session
 
 
@@ -45,12 +44,12 @@ class AlunoRepository:
             first()
         )
 
-        if aluno:
-            aluno.email = email
-            aluno.senha = senha
-
-        else:
+        if not aluno:
             return "Aluno não encontrado"
+            
+        aluno.email = email
+        aluno.senha = senha
+            
         
         self.db.commit()
         return aluno

@@ -17,3 +17,10 @@ class Admin(Base):
     )
     senha = Column(String(100))
     email = Column(String(150), unique=True)
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "senha": self.senha,
+            "usemail": self.email
+        }

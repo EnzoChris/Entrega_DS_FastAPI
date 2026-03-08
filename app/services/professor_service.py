@@ -37,3 +37,9 @@ class ProfessorService:
             raise ValueError("O professor não existe")
         
         return professor
+    
+    def materias_lecionadas(self, usuario:str):
+
+        materias = self.professor_repository.materias_lecionadas(usuario)
+
+        return [ materia.nome for materia in materias]

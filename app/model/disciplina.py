@@ -11,7 +11,7 @@ class Disciplina(Base):
     __tablename__ = "disciplina"
 
     codigo = Column(Integer, primary_key=True)
-    nome = Column(String, name=False)
+    nome = Column(String, nullable=False)
 
     notas = relationship("Nota", back_populates="disciplinas")
     professores = relationship("Professor",secondary=professor_disciplina, back_populates="disciplinas")

@@ -23,8 +23,32 @@ class NotasService:
             
             notas = self.notas_repository.carregar_nota(email)
             return [
-                nota.to_dict() for nota in notas
+                {
+                    "codigo": nota.codigo,
+                    "n1": nota.n1,
+                    "n2": nota.n2,
+                    "matricula_aluno": nota.matricula_aluno,
+                    "materia": disciplina.nome
+                } for nota, disciplina in notas
             ]
+
+
+    def carregar_nota_por_matricula(self, matricula:str):
+            matricula_uuid = UUID(matricula)
+            
+            notas = self.notas_repository.carregar_nota_por_matricula(matricula_uuid)
+
+            return [
+                {
+                    "codigo": nota.codigo,
+                    "n1": nota.n1,
+                    "n2": nota.n2,
+                    "matricula_aluno": nota.matricula_aluno,
+                    "materia": disciplina.nome
+                } for nota, disciplina in notas
+            ]
+
+
          
 
     def atualizar_nota(self, matricula:str, nota:Nota):
@@ -33,7 +57,7 @@ class NotasService:
             codigo = nota.codigo,
             n1 = nota.n1,
             n2 = nota.n2,
-            matricula_aluno = nota.matricula,
+            matricula_aluno = nota.matricula_aluno,
             cod_materia = nota.cod_materia
         )
             

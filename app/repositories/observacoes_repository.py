@@ -30,15 +30,35 @@ class ObservacoesRepository:
                 .filter(Observacoes.id_destinatario == aluno.matricula)
                 .all()
                 )
+    
+
+    def carregar_obervacoes_por_matricula(self, matricula:UUID):
+        aluno_repository = AlunoRepository(self.db)
+
+        return (self.db.query(Observacoes)
+                .filter(Observacoes.id_destinatario == matricula)
+                .all()
+                )
 
 
     
     def registrar_observacao(self, observacao:Observacoes):
+
         self.db.add(observacao)
 
         self.db.commit()
 
         return observacao
+    
+
+    def retornar_professor(self, id_remetente:UUID):
+
+        professor_repository = ProfessorRepository(self.db)
+
+        professor = professor_repository.buscar_por_id(id_remetente)
+
+
+        return professor.nome
 
 
 

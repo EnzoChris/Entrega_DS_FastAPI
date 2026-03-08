@@ -3,6 +3,7 @@ from model.professor import Professor
 from model.disciplina import Disciplina
 from model.professor_disciplina import professor_disciplina
 from sqlalchemy import func
+from uuid import UUID
 from sqlalchemy.orm import Session
 
 class ProfessorRepository:
@@ -49,3 +50,19 @@ class ProfessorRepository:
 
         
         return media_geral or 0
+    
+
+    def materias_lecionadas(self, usuario:str):
+        professor = self.buscar_por_usuario(usuario)
+
+        if not professor:
+            raise ValueError("Professor não encontrado")
+        
+        return (self.db.query(Disciplina)
+                .join(professor_disciplina, professor_disciplina.c.disciplina_id == Disciplina.codigo)
+                .filter(professor_disciplina.c.professor_id == professor.id)
+                .all()
+                )
+    
+    def buscar_por_id(self, id:UUID):
+        return self.db.get(Professor, id)

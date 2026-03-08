@@ -57,12 +57,14 @@ def get_veri_professor(usuario:str, senha:str, db: Session = Depends(get_db)):
     alunos = aluno_service.buscar_alunos_por_professor(usuario)
     qnt_notas = professor_service.contar_notas_lancadas(usuario)
     media_alunos = professor_service.calc_media_geral(usuario)
+    materias = professor_service.materias_lecionadas(usuario)
 
     return {
         "professor":professor.to_dict(),
         "qnt_notas":qnt_notas,
         "media_alunos":media_alunos,
-        "alunos":alunos
+        "alunos":alunos,
+        "materias":materias
     }
 
 
@@ -87,9 +89,9 @@ def get_veri_aluno(email:str, senha:str, db: Session = Depends(get_db)):
 def enviar_observcao(observacao:observacaoCrete, db: Session = Depends(get_db)):
     observacoes_service = ObservacoesService(ObservacoesRepository(db))
 
-    observacao = observacoes_service.registrar_observacao(observacao)
+    observacoes = observacoes_service.registrar_observacao(observacao)
 
-    return {"observacao":observacao.to_dict()}
+    return {"observacao":observacoes}
 
 
 @app.delete("/api/deletar-observacao/{usuario}")
@@ -115,3 +117,22 @@ def completar_cadastro_endpoint(matricula:str, email:str, senha:str, db: Session
     resposta = aluno_service.completar_cadatro(matricula, email, senha)
 
     return {"aluno":resposta.to_dict()}
+
+
+
+@app.get("/api/aluno/recuperar-nota/{matricula}")
+def recuperar_notas(matricula:str, db: Session = Depends(get_db)):
+    notas_service = NotasService(NotasRepository(db))
+
+    notas = notas_service.carregar_nota_por_matricula(matricula)
+
+    return {"notas":notas}
+
+
+@app.get("/api/aluno/carregar-observacoes/{matricula}")
+def carregar_observacoes(matricula:str, db: Session = Depends(get_db)):
+    observacoes_service = ObservacoesService(ObservacoesRepository(db))
+
+    observacoes = observacoes_service.carregar_obervacoes_por_matricula(matricula)
+
+    return {"observacoes":observacoes}
